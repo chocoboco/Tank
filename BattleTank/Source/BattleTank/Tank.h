@@ -23,13 +23,11 @@ public:
 	ATank();
 
 protected:
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintReadWrite)
 	UTankAimingComponent* TankAimingComponent = nullptr;
 
 	UPROPERTY(BlueprintReadOnly)
 	UTankMovementComponent* TankMovementComponent = nullptr;
-
-	UTankBarrel* Barrel = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = Setup)
 	TSubclassOf<AProjectile> ProjectileBlueprint;
@@ -41,22 +39,18 @@ protected:
 	float ReloadTimeInSeconds = 3.0f;
 
 	float LastFireTime = 0.0f;
+
+	UPROPERTY(BlueprintReadWrite)
+	UTankBarrel* BarrelComponent = nullptr;
 	
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
 public:
-
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UFUNCTION(BlueprintCallable, Category = Setup)
-	void SetTurretReference(UTankTurret* TurretToSet);
-
-	UFUNCTION(BlueprintCallable, Category = Setup)
-	void SetBarrelReference(UTankBarrel* BarrelToSet);
+	bool IsReloadEnd() const;
 
 	UFUNCTION(BlueprintCallable)
 	bool IsCanAim() const;

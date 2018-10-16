@@ -2,6 +2,7 @@
 
 #include "TankAimingComponent.h"
 #include "Kismet/GamePlayStatics.h"
+#include "Tank.h"
 #include "TankTurret.h"
 #include "TankBarrel.h"
 
@@ -14,14 +15,15 @@ UTankAimingComponent::UTankAimingComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-void UTankAimingComponent::SetTurretReference(UTankTurret* TurretToSet)
+void UTankAimingComponent::Initalize( UTankBarrel* BarrelToSet, UTankTurret* TurretToSet )
 {
-	Turret = TurretToSet;
-}
+	OwnerTank = Cast<ATank>(GetOwner());
 
-void UTankAimingComponent::SetBarrelReference(UTankBarrel* BarrelToSet)
-{
-	Barrel = BarrelToSet;
+	if (BarrelToSet && TurretToSet)
+	{
+		Barrel = BarrelToSet;
+		Turret = TurretToSet;
+	}
 }
 
 bool UTankAimingComponent::IsCanAim() const
@@ -54,15 +56,35 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 		{
 			auto AimDirection = OutLaunchVelocity.GetSafeNormal();
 			MoveBarrelTowards( AimDirection );
+			SetFiringState( EFiringState::Aiming );
+
 			//UE_LOG(LogTemp, Warning, TEXT("Solution Found. %s aiming at %s from %s speed(%f)"), *GetName(), *HitLocation.ToString(), *Barrel->GetComponentLocation().ToString(), LaunchSpeed);
 		}
 		else
 		{
+			SetFiringState( EFiringState::Locked );
 			//UE_LOG(LogTemp, Warning, TEXT("Solution Not Found. %s"), *GetName() );
 		}
 	}
 
 	//UE_LOG(LogTemp, Warning, TEXT("%s aiming at %s from %s speed(%f)"), *GetName(), *HitLocation.ToString(), *Barrel->GetComponentLocation().ToString(), LaunchSpeed);
+}
+
+void UTankAimingComponent::SetFiringState(EFiringState NewState)
+{
+	if (FiringState == EFiringState::Reloading &&
+		(NewState == EFiringState::Aiming || NewState == EFiringState::Locked) )
+	{
+		if (OwnerTank && OwnerTank->IsReloadEnd() == false)
+			return;
+	}
+
+	FiringState = NewState;
+}
+
+EFiringState UTankAimingComponent::GetFiringState() const
+{
+	return FiringState;
 }
 
 void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)

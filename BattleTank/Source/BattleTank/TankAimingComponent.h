@@ -14,6 +14,7 @@ enum class EFiringState : uint8
 	Locked,
 };
 
+class ATank;
 class UTankTurret;
 class UTankBarrel;
 
@@ -26,8 +27,8 @@ public:
 	// Sets default values for this component's properties
 	UTankAimingComponent();
 
-	void SetTurretReference(UTankTurret* TurretToSet);
-	void SetBarrelReference(UTankBarrel* BarrelToSet);
+	UFUNCTION(BlueprintCallable, Category = Setup)
+	void Initalize( UTankBarrel* BarrelToSet, UTankTurret* TurretToSet );
 
 	bool IsCanAim() const;
 
@@ -36,8 +37,12 @@ protected:
 
 public:	
 	void AimAt(FVector WorldspaceAim, float LaunchSpeed);
+	void SetFiringState( EFiringState NewState );
+	EFiringState GetFiringState() const;
 
 protected:
+	ATank* OwnerTank = nullptr;
+
 	UPROPERTY(BlueprintReadOnly, Category = State)
 	EFiringState FiringState = EFiringState::Reloading;
 	
