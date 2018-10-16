@@ -23,6 +23,7 @@ public:
 	ATank();
 
 protected:
+	UPROPERTY(BlueprintReadOnly)
 	UTankAimingComponent* TankAimingComponent = nullptr;
 
 	UPROPERTY(BlueprintReadOnly)
@@ -56,6 +57,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	void SetBarrelReference(UTankBarrel* BarrelToSet);
+
+	UFUNCTION(BlueprintCallable)
+	bool IsCanAim() const;
 
 	UFUNCTION(BlueprintCallable, Category = Firing)
 	void Fire();

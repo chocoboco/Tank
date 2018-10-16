@@ -24,6 +24,11 @@ void UTankAimingComponent::SetBarrelReference(UTankBarrel* BarrelToSet)
 	Barrel = BarrelToSet;
 }
 
+bool UTankAimingComponent::IsCanAim() const
+{
+	return CurrentCanAim;
+}
+
 void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 {
 	if (Barrel)
@@ -32,7 +37,7 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 		FVector StartLocation = Barrel->GetSocketLocation( FName("Projectile") );
 		TArray<AActor*> ActorToIgnore;
 
-		bool bHaveAimSolution = UGameplayStatics::SuggestProjectileVelocity(this,
+		CurrentCanAim = UGameplayStatics::SuggestProjectileVelocity(this,
 			/*out*/ OutLaunchVelocity,
 			StartLocation,
 			HitLocation,
@@ -45,7 +50,7 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 			ActorToIgnore,
 			false );
 
-		if (bHaveAimSolution)
+		if (CurrentCanAim)
 		{
 			auto AimDirection = OutLaunchVelocity.GetSafeNormal();
 			MoveBarrelTowards( AimDirection );

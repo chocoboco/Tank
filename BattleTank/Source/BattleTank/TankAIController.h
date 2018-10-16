@@ -21,8 +21,10 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	
+	UPROPERTY(EditDefaultsOnly, Category = Setup)
+	float AcceptanceRadius = 3000.0f;
+
 public:
 	ATank* GetControlledTank() const;
 	ATank* GetPlayerTank() const;
-
 };

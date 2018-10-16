@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Tank.h"
-#include "TankMovementComponent.h"
 #include "TankAimingComponent.h"
 #include "TankBarrel.h"
 #include "TankTurret.h"
@@ -50,6 +49,11 @@ void ATank::SetBarrelReference(UTankBarrel* BarrelToSet)
 {
 	Barrel = BarrelToSet;
 	TankAimingComponent->SetBarrelReference(BarrelToSet);
+}
+
+bool ATank::IsCanAim() const
+{
+	return TankAimingComponent->IsCanAim();
 }
 
 void ATank::Fire()

@@ -29,6 +29,7 @@ protected:
 	bool GetLookVectorHitLocation(FVector LookDirection, FVector& HitLocation) const;
 	
 public:
+	UFUNCTION(BlueprintCallable, Category = Setup)
 	ATank* GetControlledTank() const;
 	
 	UPROPERTY(EditDefaultsOnly)
