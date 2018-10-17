@@ -6,8 +6,7 @@
 #include "GameFramework/PlayerController.h"
 #include "TankPlayerController.generated.h"
 
-
-class ATank;
+class UTankAimingComponent;
 
 /**
  * 
@@ -30,11 +29,10 @@ protected:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
 	void FoundAimingComponent( UTankAimingComponent* AimCompRef );
+
+	UTankAimingComponent* GetControlledTankAimComponent() const;
 	
 public:
-	UFUNCTION(BlueprintCallable, Category = Setup)
-	ATank* GetControlledTank() const;
-	
 	UPROPERTY(EditDefaultsOnly)
 	float CrosshairXLocation = 0.5f;
 

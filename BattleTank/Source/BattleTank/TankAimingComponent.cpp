@@ -2,9 +2,9 @@
 
 #include "TankAimingComponent.h"
 #include "Kismet/GamePlayStatics.h"
-#include "Tank.h"
 #include "TankTurret.h"
 #include "TankBarrel.h"
+#include "Projectile.h"
 
 
 // Sets default values for this component's properties
@@ -17,8 +17,6 @@ UTankAimingComponent::UTankAimingComponent()
 
 void UTankAimingComponent::Initalize( UTankBarrel* BarrelToSet, UTankTurret* TurretToSet )
 {
-	OwnerTank = Cast<ATank>(GetOwner());
-
 	if (BarrelToSet && TurretToSet)
 	{
 		Barrel = BarrelToSet;
@@ -31,7 +29,7 @@ bool UTankAimingComponent::IsCanAim() const
 	return CurrentCanAim;
 }
 
-void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
+void UTankAimingComponent::AimAt(FVector HitLocation)
 {
 	if (Barrel)
 	{
@@ -70,12 +68,38 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 	//UE_LOG(LogTemp, Warning, TEXT("%s aiming at %s from %s speed(%f)"), *GetName(), *HitLocation.ToString(), *Barrel->GetComponentLocation().ToString(), LaunchSpeed);
 }
 
+void UTankAimingComponent::Fire()
+{
+	if (Barrel)
+	{
+		ensure( ProjectileBlueprint );
+
+		bool isReloaded = IsReloadEnd();
+		if (isReloaded)
+		{
+			AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, Barrel->GetSocketTransform(FName("Projectile")));
+			if (Projectile)
+			{
+				Projectile->LaunchProjectile(LaunchSpeed);
+				LastFireTime = static_cast<float>(FPlatformTime::Seconds());
+
+				SetFiringState(EFiringState::Reloading);
+			}
+		}
+	}
+}
+
+bool UTankAimingComponent::IsReloadEnd() const
+{
+	return ReloadTimeInSeconds < (FPlatformTime::Seconds() - LastFireTime);
+}
+
 void UTankAimingComponent::SetFiringState(EFiringState NewState)
 {
-	if (FiringState == EFiringState::Reloading &&
+	if( (FiringState == EFiringState::Reloading) &&
 		(NewState == EFiringState::Aiming || NewState == EFiringState::Locked) )
 	{
-		if (OwnerTank && OwnerTank->IsReloadEnd() == false)
+		if (IsReloadEnd() == false)
 			return;
 	}
 

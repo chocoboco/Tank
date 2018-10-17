@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TankPlayerController.h"
-#include "Tank.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "Private/KismetTraceUtils.h"
 #include "TankAimingComponent.h"
@@ -12,7 +11,7 @@ void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	auto ControlledTank = GetControlledTank();
+	APawn* ControlledTank = GetPawn();
 	if (ControlledTank)
 	{
 		UTankAimingComponent* AP = Cast<UTankAimingComponent>(ControlledTank->GetComponentByClass( UTankAimingComponent::StaticClass() ));
@@ -26,9 +25,9 @@ void ATankPlayerController::BeginPlay()
 }
 
 
-ATank* ATankPlayerController::GetControlledTank() const
+UTankAimingComponent* ATankPlayerController::GetControlledTankAimComponent() const
 {
-	return Cast<ATank>( GetPawn() );
+	return Cast<UTankAimingComponent>( GetPawn()->GetComponentByClass(UTankAimingComponent::StaticClass()) );
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
@@ -42,13 +41,13 @@ void ATankPlayerController::Tick(float DeltaTime)
 
 void ATankPlayerController::AimTowardsCrosshair()
 {
-	ATank* ControlledTank = GetControlledTank();
-	if (ControlledTank)
+	UTankAimingComponent* ControlledTankAimComponent = GetControlledTankAimComponent();
+	if (ControlledTankAimComponent)
 	{
 		FVector HitLocation;
 		if( GetSightRayHitLocation(HitLocation) )
 		{
-			ControlledTank->AimAt( HitLocation );
+			ControlledTankAimComponent->AimAt( HitLocation );
 			//UE_LOG( LogTemp, Warning, TEXT("Hit location: %s"), *HitLocation.ToString() );
 		}
 	}
