@@ -27,6 +27,9 @@ protected:
 	bool GetSightRayHitLocation( FVector& HitLoation ) const;
 	bool GetLookDirection(FVector2D ScreenLocation, FVector& WorldLocation, FVector& LookDirection) const;
 	bool GetLookVectorHitLocation(FVector LookDirection, FVector& HitLocation) const;
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
+	void FoundAimingComponent( UTankAimingComponent* AimCompRef );
 	
 public:
 	UFUNCTION(BlueprintCallable, Category = Setup)

@@ -79,6 +79,7 @@ void UTankAimingComponent::SetFiringState(EFiringState NewState)
 			return;
 	}
 
+	//UE_LOG( LogTemp, Warning, TEXT("SetFiringState: %d"), (int)NewState );
 	FiringState = NewState;
 }
 

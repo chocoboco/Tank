@@ -4,6 +4,7 @@
 #include "Tank.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "Private/KismetTraceUtils.h"
+#include "TankAimingComponent.h"
 
 
 // Called when the game starts or when spawned
@@ -14,6 +15,12 @@ void ATankPlayerController::BeginPlay()
 	auto ControlledTank = GetControlledTank();
 	if (ControlledTank)
 	{
+		UTankAimingComponent* AP = Cast<UTankAimingComponent>(ControlledTank->GetComponentByClass( UTankAimingComponent::StaticClass() ));
+		if (AP)
+		{
+			FoundAimingComponent( AP );
+		}
+
 		UE_LOG( LogTemp, Warning, TEXT("PlayerController possessing: %s"), *(ControlledTank->GetName()) );
 	}
 }
