@@ -17,7 +17,21 @@ class BATTLETANK_API UTankTrack : public UStaticMeshComponent
 public:
 	UFUNCTION(BlueprintCallable, Category = Input)
 	void SetThrottle( float Throttle );
+	void DrivingTrack();
+
+	virtual void BeginPlay() override;
+
+	void ApplySidewaysForce();
 	
 	UPROPERTY(EditDefaultsOnly)
-	float TrackMaxDrivingForce = 400000.0f;
+	float TrackMaxDrivingForce = 4000000.0f;
+
+protected:
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+private:
+	UTankTrack();
+
+	float CurrentThrottle = 0.0f;
 };

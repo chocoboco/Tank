@@ -35,6 +35,7 @@ void UTankMovementComponent::IntendTurnRight(float Throw)
 	}
 }
 
+// called from AI -> Path Finding -> RequestDirectMove()
 void UTankMovementComponent::RequestDirectMove(const FVector& MoveVelocity, bool bForceMaxSpeed)
 {
 	//Super::RequestDirectMove( MoveVelocity, bForceMaxSpeed );

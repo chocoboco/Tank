@@ -40,6 +40,7 @@ public:
 	void SetFiringState( EFiringState NewState );
 	EFiringState GetFiringState() const;
 	bool IsReloadEnd() const;
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable, Category = Firing)
 	void Fire();

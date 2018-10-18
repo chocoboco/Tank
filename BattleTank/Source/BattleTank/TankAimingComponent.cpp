@@ -129,3 +129,8 @@ void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 	Turret->Rotate( DeltaRotator.Yaw );
 	Barrel->Elevate( DeltaRotator.Pitch );
 }
+
+void UTankAimingComponent::TickComponent( float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction )
+{
+
+}

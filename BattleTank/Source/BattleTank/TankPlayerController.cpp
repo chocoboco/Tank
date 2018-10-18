@@ -27,7 +27,11 @@ void ATankPlayerController::BeginPlay()
 
 UTankAimingComponent* ATankPlayerController::GetControlledTankAimComponent() const
 {
-	return Cast<UTankAimingComponent>( GetPawn()->GetComponentByClass(UTankAimingComponent::StaticClass()) );
+	APawn* ControlledPawn = GetPawn();
+	if (ControlledPawn)
+		return Cast<UTankAimingComponent>(ControlledPawn->GetComponentByClass(UTankAimingComponent::StaticClass()));
+	else
+		return nullptr;
 }
 
 void ATankPlayerController::Tick(float DeltaTime)
@@ -55,6 +59,7 @@ void ATankPlayerController::AimTowardsCrosshair()
 
 bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 {
+	bool bResult = false;
 	int32 ViewportSizeX, ViewportSizeY;
 	GetViewportSize( ViewportSizeX, ViewportSizeY );
 
@@ -65,11 +70,11 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 	FVector LookDirection;
 	if (GetLookDirection(ScreenLocation, LookLocation, LookDirection))
 	{
-		GetLookVectorHitLocation( LookDirection, /*OUT*/ HitLocation );
+		bResult = GetLookVectorHitLocation( LookDirection, /*OUT*/ HitLocation );
 		DrawDebugDirectionalArrow(GetWorld(), LookLocation, LookLocation + (LookDirection*1000000.0f), 10000.0f, FColor::Red );
 	}
 
-	return true;
+	return bResult;
 }
 
 bool ATankPlayerController::GetLookDirection(FVector2D ScreenLocation, FVector& WorldLocation, FVector& LookDirection) const

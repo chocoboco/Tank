@@ -21,8 +21,8 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	
-	UPROPERTY(EditDefaultsOnly, Category = Setup)
-	float AcceptanceRadius = 3000.0f;
+	UPROPERTY(EditAnywhere, Category = Setup)
+	float AcceptanceRadius = 80000.0f;
 
 public:
 	UTankAimingComponent* GetControlledTankAimingComponent() const;
