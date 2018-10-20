@@ -30,11 +30,14 @@ void UTankTrack::DrivingTrack()
 	//UE_LOG(LogTemp, Warning, TEXT("%s | %f"), *GetName(), Throttle);
 }
 
+// 달아놓은 component 의 simulated physics 가 켜져있느냐 아니냐에 따라 계속 호출되느냐, 한번만 호출되느냐 달라짐.
 void UTankTrack::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	DrivingTrack();
 	ApplySidewaysForce();
 	CurrentThrottle = 0.0f;
+
+	//UE_LOG(LogTemp, Warning, TEXT("Tank Track OnHit(): %s"), *GetName());
 }
 
 void UTankTrack::ApplySidewaysForce()

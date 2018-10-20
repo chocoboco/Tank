@@ -50,7 +50,7 @@ void UTankAimingComponent::AimAt(FVector HitLocation)
 			ActorToIgnore,
 			false );
 
-		if (CurrentCanAim)
+		if (CurrentCanAim && HasAmmo())
 		{
 			auto AimDirection = OutLaunchVelocity.GetSafeNormal();
 			MoveBarrelTowards( AimDirection );
@@ -74,8 +74,7 @@ void UTankAimingComponent::Fire()
 	{
 		ensure( ProjectileBlueprint );
 
-		bool isReloaded = IsReloadEnd();
-		if (isReloaded)
+		if (IsReloadEnd() && HasAmmo())
 		{
 			AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(ProjectileBlueprint, Barrel->GetSocketTransform(FName("Projectile")));
 			if (Projectile)
@@ -83,7 +82,11 @@ void UTankAimingComponent::Fire()
 				Projectile->LaunchProjectile(LaunchSpeed);
 				LastFireTime = static_cast<float>(FPlatformTime::Seconds());
 
-				SetFiringState(EFiringState::Reloading);
+				Ammo -= 1;
+				if (HasAmmo())
+					SetFiringState( EFiringState::Reloading );
+				else
+					SetFiringState( EFiringState::Locked );
 			}
 		}
 	}
@@ -94,12 +97,23 @@ bool UTankAimingComponent::IsReloadEnd() const
 	return ReloadTimeInSeconds < (FPlatformTime::Seconds() - LastFireTime);
 }
 
+bool UTankAimingComponent::HasAmmo() const
+{
+	return 0 < Ammo;
+}
+
+int UTankAimingComponent::GetCurrentAmmo() const
+{
+	return Ammo;
+}
+
 void UTankAimingComponent::SetFiringState(EFiringState NewState)
 {
 	if( (FiringState == EFiringState::Reloading) &&
 		(NewState == EFiringState::Aiming || NewState == EFiringState::Locked) )
 	{
-		if (IsReloadEnd() == false)
+		if (IsReloadEnd() == false ||
+			HasAmmo() == false )
 			return;
 	}
 

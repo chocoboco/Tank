@@ -40,7 +40,11 @@ public:
 	void SetFiringState( EFiringState NewState );
 	EFiringState GetFiringState() const;
 	bool IsReloadEnd() const;
+	bool HasAmmo() const;
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction) override;
+
+	UFUNCTION(BlueprintCallable, Category = Firing)
+	int GetCurrentAmmo() const;
 
 	UFUNCTION(BlueprintCallable, Category = Firing)
 	void Fire();
@@ -54,6 +58,9 @@ public:
 protected:
 	UPROPERTY(EditDefaultsOnly, Category = Setup)
 	TSubclassOf<AProjectile> ProjectileBlueprint;
+
+	UPROPERTY(EditDefaultsOnly, Category = Setup)
+	int Ammo = 3;
 
 	UPROPERTY(BlueprintReadOnly, Category = State)
 	EFiringState FiringState = EFiringState::Reloading;
