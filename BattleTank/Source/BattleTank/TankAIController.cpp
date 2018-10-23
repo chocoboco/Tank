@@ -2,6 +2,7 @@
 
 #include "TankAIController.h"
 #include "TankAimingComponent.h"
+#include "Tank.h"
 
 
 // Called when the game starts or when spawned
@@ -13,6 +14,18 @@ void ATankAIController::BeginPlay()
 UTankAimingComponent* ATankAIController::GetControlledTankAimingComponent() const
 {
 	return Cast<UTankAimingComponent>(GetPawn()->GetComponentByClass(UTankAimingComponent::StaticClass()));
+}
+
+// UnPossess() 할 때도 호출됨.
+void ATankAIController::SetPawn(APawn * InPawn)
+{
+	Super::SetPawn(InPawn);
+
+	ATank* PossessedTank = Cast<ATank>(InPawn);
+	if (PossessedTank)
+	{
+		PossessedTank->OnActorDead.AddUniqueDynamic( this, &ATankAIController::OnPossessedTankDeath );
+	}
 }
 
 APawn* ATankAIController::GetPlayerTank() const
@@ -43,4 +56,15 @@ void ATankAIController::Tick(float DeltaTime)
 		if (FiringState == EFiringState::Aiming)
 			ControlledTankAimingComponent->Fire();
 	}
+}
+
+void ATankAIController::OnPossessedTankDeath()
+{
+	ensure(GetPawn());
+	if (GetPawn())
+	{
+		GetPawn()->DetachFromControllerPendingDestroy();
+	}
+
+	UE_LOG( LogTemp, Warning, TEXT("%s OnTankDeath() Called!!"), *GetName());
 }

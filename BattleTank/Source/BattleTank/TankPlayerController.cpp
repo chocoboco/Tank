@@ -4,6 +4,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "Private/KismetTraceUtils.h"
 #include "TankAimingComponent.h"
+#include "Tank.h"
 
 
 // Called when the game starts or when spawned
@@ -11,19 +12,48 @@ void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	APawn* ControlledTank = GetPawn();
-	if (ControlledTank)
+	APawn* ControlledPawn = GetPawn();
+	ensure(ControlledPawn);
+	if (ControlledPawn)
 	{
-		UTankAimingComponent* AP = Cast<UTankAimingComponent>(ControlledTank->GetComponentByClass( UTankAimingComponent::StaticClass() ));
+		UTankAimingComponent* AP = Cast<UTankAimingComponent>(ControlledPawn->GetComponentByClass( UTankAimingComponent::StaticClass() ));
 		if (AP)
 		{
 			FoundAimingComponent( AP );
 		}
 
-		UE_LOG( LogTemp, Warning, TEXT("PlayerController possessing: %s"), *(ControlledTank->GetName()) );
+		UE_LOG( LogTemp, Warning, TEXT("PlayerController possessing: %s"), *(ControlledPawn->GetName()) );
 	}
 }
 
+void ATankPlayerController::Possess(APawn* aPawn)
+{
+	Super::Possess(aPawn);
+
+	ATank* ControlledTank = Cast<ATank>(aPawn);
+	ensure(ControlledTank);
+	if (ControlledTank)
+	{
+		ControlledTank->OnActorDead.AddUniqueDynamic(this, &ATankPlayerController::OnPossessedTankDeath);
+	}
+}
+
+void ATankPlayerController::UnPossess()
+{
+	ATank* ControlledTank = Cast<ATank>(GetPawn());
+	//ensure(ControlledTank);
+	if (ControlledTank)
+	{
+		ControlledTank->OnActorDead.RemoveDynamic(this, &ATankPlayerController::OnPossessedTankDeath);
+	}
+
+	Super::UnPossess();
+}
+
+void ATankPlayerController::OnPossessedTankDeath()
+{
+	StartSpectatingOnly();
+}
 
 UTankAimingComponent* ATankPlayerController::GetControlledTankAimComponent() const
 {

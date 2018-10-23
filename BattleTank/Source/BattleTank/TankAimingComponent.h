@@ -60,7 +60,7 @@ protected:
 	TSubclassOf<AProjectile> ProjectileBlueprint;
 
 	UPROPERTY(EditDefaultsOnly, Category = Setup)
-	int Ammo = 3;
+	int Ammo = 20;
 
 	UPROPERTY(BlueprintReadOnly, Category = State)
 	EFiringState FiringState = EFiringState::Reloading;

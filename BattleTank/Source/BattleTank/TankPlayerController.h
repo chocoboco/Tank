@@ -19,6 +19,8 @@ class BATTLETANK_API ATankPlayerController : public APlayerController
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void Possess(APawn* aPawn) override;
+	virtual void UnPossess() override;
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -28,7 +30,10 @@ protected:
 	bool GetLookVectorHitLocation(FVector LookDirection, FVector& HitLocation) const;
 
 	UFUNCTION(BlueprintImplementableEvent, Category = "Setup")
-	void FoundAimingComponent( UTankAimingComponent* AimCompRef );
+	void FoundAimingComponent(UTankAimingComponent* AimCompRef);
+
+	UFUNCTION()
+	void OnPossessedTankDeath();
 
 	UTankAimingComponent* GetControlledTankAimComponent() const;
 	

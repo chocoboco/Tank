@@ -19,7 +19,11 @@ class BATTLETANK_API ATankAIController : public AAIController
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void SetPawn(APawn* InPawn) override;
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION()
+	void OnPossessedTankDeath();
 	
 	UPROPERTY(EditAnywhere, Category = Setup)
 	float AcceptanceRadius = 80000.0f;
