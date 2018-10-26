@@ -124,7 +124,7 @@ bool ATankPlayerController::GetLookVectorHitLocation(FVector LookDirection, FVec
 					hitResult, 
 					StartLocation,
 					EndLocation, 
-					ECollisionChannel::ECC_Visibility))
+					ECollisionChannel::ECC_Camera))
 	{
 		HitLocation = hitResult.Location;
 		DrawDebugBox( GetWorld(), HitLocation, FVector(10.0f, 10.0f, 10.0f), FColor::Red );
